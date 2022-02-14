@@ -19,6 +19,10 @@
     <properties>
         <java.version>1.8</java.version>
         <druid.version>1.2.1</druid.version>
+        <mysql.version>8.0.27</mysql.version>
+        <mybatis-plus.version>3.4.1</mybatis-plus.version>
+        <findbugs.version>3.0.2</findbugs.version>
+        <hutool.version>5.6.5</hutool.version>
     </properties>
 
     <dependencies>
@@ -32,19 +36,19 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.6.5</version>
+            <version>${hutool.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-            <version>3.0.2</version>
+            <version>${findbugs.version}</version>
         </dependency>
 
         <dependency>
             <groupId>com.baomidou</groupId>
             <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.4.1</version>
+            <version>${mybatis-plus.version}</version>
         </dependency>
 
         <dependency>
@@ -69,6 +73,7 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
             <optional>true</optional>
             <scope>test</scope>
         </dependency>
