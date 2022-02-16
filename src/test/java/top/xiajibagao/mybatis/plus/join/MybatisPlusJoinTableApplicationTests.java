@@ -156,11 +156,30 @@ class MybatisPlusJoinTableApplicationTests {
         printObject(studentDTOS);
     }
 
+    @Test
+    void testJoin() {
+        JoinWrapper<StudentDO, StudentDTO> wrapper = JoinWrapper.create(StudentDO.class, StudentDTO.class)
+            .selectAll()
+            .eqIfNotNull(StudentDO::getName, "小明")
+            .leftJoin(ScoreDO.class, w -> w
+                .on(StudentDO::getId, Condition.EQ, ScoreDO::getStudentId)
+                .select(ScoreDO::getScore, StudentDTO::getScore)
+                .le(ScoreDO::getScore, 60)
+                .leftJoin(CourseDO.class, w2 -> w2
+                    .on(ScoreDO::getCourseId, Condition.EQ, CourseDO::getId)
+                    .select(CourseDO::getName, StudentDTO::getCourseName)
+                    .likeIfNotBank(CourseDO::getType, "文科")
+                )
+            );
+        List<StudentDTO> studentDTOS = studentMapper.selectListJoin(wrapper);
+        System.out.println(studentDTOS);
+    }
+
     /**
      * 测试join
      */
     @Test
-    public void testJoin() {
+    public void testJoinAndCondition() {
         // 查询学生成绩
         JoinWrapper<StudentDO, StudentDTO> wrapper = JoinWrapper.create(StudentDO.class, StudentDTO.class)
             .selectAll()
