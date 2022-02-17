@@ -3,6 +3,7 @@ package top.xiajibagao.mybatis.plus.join.wrapper.column;
 import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 import top.xiajibagao.mybatis.plus.join.constants.ExtendConstants;
 import top.xiajibagao.mybatis.plus.join.constants.FuncKeyword;
+import top.xiajibagao.mybatis.plus.join.wrapper.JoinWrapper;
 import top.xiajibagao.mybatis.plus.join.wrapper.interfaces.ColumnQuery;
 import top.xiajibagao.mybatis.plus.join.wrapper.interfaces.ColumnSegment;
 import top.xiajibagao.mybatis.plus.join.wrapper.interfaces.TableSegment;
@@ -151,6 +152,12 @@ public class Columns {
 
     public static FuncColumn upper(@NotNull ColumnSegment column) {
         return new FuncColumn(FuncKeyword.UPPER, column);
+    }
+
+    // ============================= 其他 =============================
+
+    public static SubColumn subQuery(@NotNull JoinWrapper<?, ?> tableSegment) {
+        return new SubColumn(tableSegment);
     }
 
     public static <T extends ColumnQuery<?, ?, ?, ?>> CaseColumn<T> caseByCondition(ColumnSegment column, @NotNull T table) {

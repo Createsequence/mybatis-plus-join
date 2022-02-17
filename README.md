@@ -22,7 +22,7 @@
 
 2. 将动态返回值插件`DynamicResultInterceptor`注册到 `com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean` 中 ，
 
-3. 然后将扩展 SQL 注入器 `JoinMethodInjector`注入到 `com.baomidou.mybatisplus.core.config.GlobalConfig`中。
+2. 然后将扩展 SQL 注入器 `JoinMethodInjector`注入到 `com.baomidou.mybatisplus.core.config.GlobalConfig`中。
 
    这里给出一个最简单配置：
 
@@ -45,7 +45,7 @@
    }
    ~~~
 
-4. 令 `mapper`接口从继承 mp 提供的 `BaseMapper`换为 `JoinMapper`：
+3. 令 `mapper`接口从继承 mp 提供的 `BaseMapper`换为 `JoinMapper`：
 
    ~~~java
    @Mapper
@@ -294,11 +294,11 @@ GROUP BY t1.course_id
 HAVING COUNT(*) > 1
 ~~~
 
-### 5、逻辑表
+### 5、子查询
 
-JoinWrapper 允许将一个已经构造好的条件构造器转为一张逻辑表/临时表，并作为主表或关联表参与查询。
+JoinWrapper 允许将一个已经构造好的条件构造器转为一张逻辑表/临时表，并用于子查询。
 
-#### 逻辑表作为关联表
+#### JOIN
 
 ~~~java
 // 查询挂科超过1人的科目的挂科人数
@@ -330,7 +330,7 @@ wrapper.selectAll()
  ) t2 ON (t1.id = t2.course_id);
 ~~~
 
-#### 逻辑表作为主表
+#### FROM
 
 ~~~java
 // 查询挂科超过1人的科目及挂科人数
@@ -363,6 +363,37 @@ FROM (
 ) t1 
 LEFT JOIN course t2 ON (t1.course_id = t2.id)
 ~~~
+
+#### WHERE
+
+~~~java
+// 查询挂科人数超过1人的科目
+JoinWrapper<CourseDO, StudentDTO> wrapper = JoinWrapper.create(CourseDO.class, StudentDTO.class);
+wrapper.selectAll()
+    .where(wrapper.toTableColumn(CourseDO::getId), Condition.IN, Columns.subQuery(
+        JoinWrapper.create(ScoreDO.class, StudentDTO.class)
+            .select(ScoreDO::getCourseId, StudentDTO::getCourseId)
+            .where(ScoreDO::getScore, Condition.LT, 60)
+            .groupBy(ScoreDO::getCourseId)
+            .having(Columns.count(), Condition.GT, "1")
+    ));
+~~~
+
+该条件构造器构造的 SQL 同：
+
+~~~sql
+SELECT t1.*
+FROM course t1
+WHERE (
+    t1.id IN (
+        SELECT t1.course_id AS course_id
+        FROM score t1
+        WHERE (t1.score < 60) GROUP BY t1.course_id HAVING COUNT(*) > 1
+    )
+);
+~~~
+
+
 
 ### 6、原生方法适配
 
@@ -397,7 +428,7 @@ mybatis-plus:
 
 ~~~java
 JoinWrapper<StudentDO, StudentDTO> wrapper = JoinWrapper.create(StudentDO.class, StudentDTO.class);
-List<StudentDO> students = studentMapper.selectList(wrapper);
+        List<StudentDO> students = studentMapper.selectList(wrapper);
 ~~~
 
 若 `StudentDO`及对于表存在字段`is_delete`，且已有相关逻辑删除配置，则实际构造出的 SQL 为：

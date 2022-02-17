@@ -179,7 +179,7 @@ class MybatisPlusJoinTableApplicationTests {
      * 测试join
      */
     @Test
-    public void testJoinAndCondition() {
+    void testJoinAndCondition() {
         // 查询学生成绩
         JoinWrapper<StudentDO, StudentDTO> wrapper = JoinWrapper.create(StudentDO.class, StudentDTO.class)
             .selectAll()
@@ -278,6 +278,31 @@ class MybatisPlusJoinTableApplicationTests {
             .innerJoin(logicTable)
             .on(CourseDO::getId, Condition.EQ, StudentDTO::getCourseId)
             .selectAll();
+
+        // SELECT t1.*, t2.name AS course_name FROM (SELECT t1.course_id AS course_id, COUNT(*) AS num FROM score t1 WHERE (t1.score < 60) GROUP BY t1.course_id HAVING COUNT(*) > 1) t1 LEFT JOIN course t2 ON (t1.course_id = t2.id)
+        List<StudentDTO> studentDTOS = scoreMapper.selectListJoin(wrapper);
+        printObject(studentDTOS);
+    }
+
+    /**
+     * 连查逻辑表
+     *
+     * @author huangchengxing
+     * @date 2022/2/11 13:57
+     */
+    @Test
+    void testSub() {
+        // 查询挂科了不止1人的科目
+
+        JoinWrapper<CourseDO, StudentDTO> wrapper = JoinWrapper.create(CourseDO.class, StudentDTO.class);
+        wrapper.selectAll()
+            .where(wrapper.toTableColumn(CourseDO::getId), Condition.IN, Columns.subQuery(
+                JoinWrapper.create(ScoreDO.class, StudentDTO.class)
+                    .select(ScoreDO::getCourseId, StudentDTO::getCourseId)
+                    .where(ScoreDO::getScore, Condition.LT, 60)
+                    .groupBy(ScoreDO::getCourseId)
+                    .having(Columns.count(), Condition.GT, "1")
+            ));
 
         // SELECT t1.*, t2.name AS course_name FROM (SELECT t1.course_id AS course_id, COUNT(*) AS num FROM score t1 WHERE (t1.score < 60) GROUP BY t1.course_id HAVING COUNT(*) > 1) t1 LEFT JOIN course t2 ON (t1.course_id = t2.id)
         List<StudentDTO> studentDTOS = scoreMapper.selectListJoin(wrapper);

@@ -13,11 +13,11 @@ import top.xiajibagao.mybatis.plus.join.helper.SqlUtils;
  *     <li>使用{@link #getColumnSql()}获取：“A.name concatAs aname”;</li>
  * </ul>
  *
- * 若字段本身为嵌套查询或特殊函数，如：“IFNULL(a.full_name, a.surname) concatAs name”，则：
+ * 若字段本身为嵌套查询或特殊函数，如：“IFNULL(a.full_name, a.surname) as name”，则：
  * <ul>
  *     <li>使用{@link #getColumn()}获取：“IFNULL(a.full_name, a.surname)”;</li>
  *     <li>使用{@link #getSqlSegment()} 获取：“IFNULL(a.full_name, a.surname)”;</li>
- *     <li>使用{@link #getColumnSql()}获取：“IFNULL(a.full_name, a.surname) concatAs name”;</li>
+ *     <li>使用{@link #getColumnSql()}获取：“IFNULL(a.full_name, a.surname) as name”;</li>
  * </ul>
  *
  * <p>实现类的{@link Object#toString()}方法返回值应与其{@link #getSqlSegment()}保持一致
