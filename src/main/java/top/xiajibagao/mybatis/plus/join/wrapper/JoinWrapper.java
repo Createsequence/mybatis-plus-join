@@ -113,31 +113,31 @@ public class JoinWrapper<T, R> extends AbstractDynamicResultWrapper<T, R, JoinWr
     // ============================== concatSegment ==============================
 
     /**
-     * 连接
+     * 全连接
      *
      * @param logicTable 待连接的逻辑表
      * @return com.xiajibagao.top.mybatis.plus.concatSegment.wrapper.JoinWrapper.JoinTable<T,J,R>
      * @author huangchengxing
      * @date 2022/2/11 10:56
      */
-    public LogicJoinTable<T, R> join(JoinWrapper<?, R> logicTable) {
-        return addJoin(JoinType.JOIN, logicTable);
+    public LogicJoinTable<T, R> fullJoin(JoinWrapper<?, R> logicTable) {
+        return addJoin(JoinType.FULL_JOIN, logicTable);
     }
 
     /**
-     * 连接
+     * 全连接
      *
      * @param joinTable 待连接的表
      * @return com.xiajibagao.top.mybatis.plus.concatSegment.wrapper.JoinWrapper.JoinTable<T,J,R>
      * @author huangchengxing
      * @date 2022/2/11 10:57
      */
-    public <J> JoinTable<T, J, R> join(Class<J> joinTable) {
-        return addJoin(JoinType.JOIN, joinTable);
+    public <J> JoinTable<T, J, R> fullJoin(Class<J> joinTable) {
+        return addJoin(JoinType.FULL_JOIN, joinTable);
     }
     
     /**
-     * 连接
+     * 全连接
      *
      * @param joinTable 待连接的表
      * @param consumer 操作
@@ -145,8 +145,8 @@ public class JoinWrapper<T, R> extends AbstractDynamicResultWrapper<T, R, JoinWr
      * @author huangchengxing
      * @date 2022/2/11 10:57
      */
-    public <J> JoinWrapper<T, R> join(Class<J> joinTable, Consumer<JoinTable<T, J, R>> consumer) {
-        return addJoin(JoinType.JOIN, joinTable, consumer);
+    public <J> JoinWrapper<T, R> fullJoin(Class<J> joinTable, Consumer<JoinTable<T, J, R>> consumer) {
+        return addJoin(JoinType.FULL_JOIN, joinTable, consumer);
     }
 
     /**

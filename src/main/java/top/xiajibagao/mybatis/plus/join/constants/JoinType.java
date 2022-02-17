@@ -11,11 +11,6 @@ import lombok.RequiredArgsConstructor;
 public enum JoinType implements ISqlSegment {
 
     /**
-     * JOIN
-     */
-    JOIN("JOIN"),
-
-    /**
      * INNER JOIN
      */
     INNER_JOIN("INNER JOIN"),
@@ -28,7 +23,12 @@ public enum JoinType implements ISqlSegment {
     /**
      * RIGHT JOIN
      */
-    RIGHT_JOIN("RIGHT JOIN");
+    RIGHT_JOIN("RIGHT JOIN"),
+
+    /**
+     * FULL JOIN
+     */
+    FULL_JOIN("FULL JOIN");
 
     private final String keyword;
 

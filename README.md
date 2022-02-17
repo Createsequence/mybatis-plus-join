@@ -63,28 +63,26 @@
 ~~~sql
 -- 课程表
 CREATE TABLE `course`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+    `id` int(0) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
 )
 
 -- 考试分数表
-DROP TABLE IF EXISTS `score`;
 CREATE TABLE `score`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `student_id` int(0) NULL DEFAULT NULL,
-  `course_id` int(0) NULL DEFAULT NULL,
-  `score` int(0) NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+    `id` int(0) NOT NULL AUTO_INCREMENT,
+    `student_id` int(0) NULL DEFAULT NULL,
+    `course_id` int(0) NULL DEFAULT NULL,
+    `score` int(0) NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
 )
 
 -- 学生表
-DROP TABLE IF EXISTS `student`;
 CREATE TABLE `student`  (
-  `id` int(0) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
-  PRIMARY KEY (`id`) USING BTREE
+    `id` int(0) NOT NULL AUTO_INCREMENT,
+    `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+    PRIMARY KEY (`id`) USING BTREE
 )
 ~~~
 
@@ -178,20 +176,20 @@ LEFT JOIN score t2 ON (t1.id = t2.student_id)
 LEFT JOIN course t3 ON (t2.course_id = t3.id)
 ~~~
 
-支持的关联查询包括 `join`、`left join`、`right join`、`inner join` 四种，关联的每张表都可以添加复数的普通条件、关联条件(on)以及查询字段，比如：
+支持的关联查询包括 `fulljoin`、`left join`、`right join`、`inner join` 四种，关联的每张表都可以添加复数的普通条件、关联条件(on)以及查询字段，比如：
 
 ~~~java
 JoinWrapper<StudentDO, StudentDTO> wrapper = JoinWrapper.create(StudentDO.class, StudentDTO.class)
-	.selectAll()
-	.eqIfNotNull(StudentDO::getName, "小明")
-	.leftJoin(ScoreDO.class, w -> w
+    .selectAll()
+    .eqIfNotNull(StudentDO::getName, "小明")
+    .leftJoin(ScoreDO.class, w -> w
 		.on(StudentDO::getId, Condition.EQ, ScoreDO::getStudentId)
 		.select(ScoreDO::getScore, StudentDTO::getScore)
 		.le(ScoreDO::getScore, 60)
 		.leftJoin(CourseDO.class, w2 -> w2
-            .on(ScoreDO::getCourseId, Condition.EQ, CourseDO::getId)
-            .select(CourseDO::getName, StudentDTO::getCourseName)
-            .likeIfNotBank(CourseDO::getType, "文科")
+			.on(ScoreDO::getCourseId, Condition.EQ, CourseDO::getId)
+			.select(CourseDO::getName, StudentDTO::getCourseName)
+			.likeIfNotBank(CourseDO::getType, "文科")
 		)
 	);
 ~~~
