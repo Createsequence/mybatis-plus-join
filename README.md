@@ -18,6 +18,8 @@
    </dependency>
    ~~~
 
+   > **注意**：项目引入了 hutool、lombok、mybaits-plus-boot-starter依赖，若与项目的依赖版本冲突需要自行排除
+
 2. 将动态返回值插件`DynamicResultInterceptor`注册到 `com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean` 中 ，
 
 3. 然后将扩展 SQL 注入器 `JoinMethodInjector`注入到 `com.baomidou.mybatisplus.core.config.GlobalConfig`中。
@@ -138,8 +140,6 @@ List<StudentDTO> studentDTOS = studentMapper.selectListJoin(wrapper);
 SELECT t1.* FROM student t1 WHERE (t1.name NOT LIKE '小明%' and t1.id in (1, 2, 3)) LIMIT 1
 ~~~
 
-
-
 ### 3、连表查询
 
 `JoinWrapper`支持构造关联查询：
@@ -216,7 +216,16 @@ JoinWrapper<StudentDO, StudentDTO> wrapper = JoinWrapper.create(StudentDO.class,
 - 作为查询条件，包括 where 与 having 条件；
 - 用于函数嵌套，如 `concat('user: ', ifNull(a.name, 'fack name'))`；
 
-更详细的内容参考[自定义字段](#四、自定义字段)部分。
+由于在关联查询时必须指定表字段来源表的别名，因此创建表字段需要通过 `JoinWrapper.toTableColumn()`将字段与表进行绑定，然后可通过函数字段工厂类`top.xiajibagao.mybatis.plus.join.wrapper.column.Columns`对获取的字段进行函数化。
+
+支持的函数：
+
+- 日期类：now, currentTimestamp, currentDate, currentTime, dateFormat, day, month, year;
+- 数学：abs, avg, max, min, sum, rand, count;
+- 字符串：ifNull, concat, format, replace, upper, lower;
+- 控制流：case..then...when...else;
+
+> **注意**：部分函数可能不受某些数据库支持，请根据自己项目使用的数据库选择性使用
 
 #### Select
 
@@ -292,7 +301,7 @@ JoinWrapper 允许将一个已经构造好的条件构造器转为一张逻辑�
 #### 逻辑表作为关联表
 
 ~~~java
-// 查询挂科了不止1人的科目的挂科人数
+// 查询挂科超过1人的科目的挂科人数
 JoinWrapper<ScoreDO, StudentDTO> logicTable = JoinWrapper.create(ScoreDO.class, StudentDTO.class);
 logicTable.select(ScoreDO::getCourseId, StudentDTO::getCourseId)
     .select(Columns.count(), StudentDTO::getNum)
@@ -355,8 +364,6 @@ FROM (
 LEFT JOIN course t2 ON (t1.course_id = t2.id)
 ~~~
 
-
-
 ### 6、原生方法适配
 
 #### 兼容BaseMapper方法
@@ -393,8 +400,14 @@ JoinWrapper<StudentDO, StudentDTO> wrapper = JoinWrapper.create(StudentDO.class,
 List<StudentDO> students = studentMapper.selectList(wrapper);
 ~~~
 
-若 `StudentDO`已有相关逻辑删除配置，则实际构造出的 SQL 为：
+若 `StudentDO`及对于表存在字段`is_delete`，且已有相关逻辑删除配置，则实际构造出的 SQL 为：
 
 ~~~sql
 SELECT * FROM student t1 where t1.is_delete = 0
 ~~~
+
+#### 分页
+
+参见[mybtis-plus分页插件](https://baomidou.com/pages/97710a/#paginationinnerinterceptor)，该插件基于 SQL 分析生效，因此不受影响。
+
+但是要注意，与当使用`JoinWrapper`构建关联查询时，与原写法一样，若 join 的表没有 where 条件，则生成的 countSql 会忽略 join 部分的表导致查询数据行数与实际待分页数据行数不一致。 
