@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import org.apache.ibatis.reflection.property.PropertyNamer;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,7 +30,7 @@ public class ColumnUtils {
      * @author huangchengxing
      * @date 2021/12/29 18:21
      */
-    public static <T, R> String getColumnName(@NotNull SFunction<T, R> column) {
+    public static <T, R> String getColumnName(@Nonnull SFunction<T, R> column) {
         return PROPERTY_COLUMN_NAME_CACHE.computeIfAbsent(
             LambdaUtils.resolve(column).getImplMethodName(),
             methodName -> StringUtils.camelToUnderline(PropertyNamer.methodToProperty(methodName))
@@ -45,7 +45,7 @@ public class ColumnUtils {
      * @author huangchengxing
      * @date 2021/12/29 18:21
      */
-    public static <T, R> String getPropertyName(@NotNull SFunction<T, R> column) {
+    public static <T, R> String getPropertyName(@Nonnull SFunction<T, R> column) {
         return PropertyNamer.methodToProperty(
             LambdaUtils.resolve(column).getImplMethodName()
         );

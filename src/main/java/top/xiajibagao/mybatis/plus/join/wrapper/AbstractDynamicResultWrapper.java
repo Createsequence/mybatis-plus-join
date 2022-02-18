@@ -21,8 +21,8 @@ import top.xiajibagao.mybatis.plus.join.helper.SqlUtils;
 import top.xiajibagao.mybatis.plus.join.wrapper.column.TableColumn;
 import top.xiajibagao.mybatis.plus.join.wrapper.interfaces.*;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -78,7 +78,7 @@ public abstract class AbstractDynamicResultWrapper<T, R, C extends AbstractDynam
      * @author huangchengxing
      * @date 2022/2/9 15:04
      */
-    protected AbstractDynamicResultWrapper(@NotNull Class<T> targetClass, @NotNull Class<R> resultClass, boolean isLogic) {
+    protected AbstractDynamicResultWrapper(@Nonnull Class<T> targetClass, @Nonnull Class<R> resultClass, boolean isLogic) {
         this.targetClass = targetClass;
         this.resultClass = resultClass;
         // 临时的逻辑表没有对应实体信息
@@ -133,7 +133,7 @@ public abstract class AbstractDynamicResultWrapper<T, R, C extends AbstractDynam
      * @date 2022/2/9 16:23
      */
     @Override
-    public C select(@NotNull ColumnSegment column) {
+    public C select(@Nonnull ColumnSegment column) {
         selectColumns.add(column);
         return typedThis;
     }

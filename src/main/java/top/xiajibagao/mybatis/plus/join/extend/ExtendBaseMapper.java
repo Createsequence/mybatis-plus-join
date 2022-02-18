@@ -10,8 +10,8 @@ import com.baomidou.mybatisplus.core.toolkit.support.SFunction;
 import com.baomidou.mybatisplus.extension.conditions.query.LambdaQueryChainWrapper;
 import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,8 +35,8 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @author huangchengxing
      * @date 2021/9/23 13:27
      */
-    @NotNull
-    default <K> List<T> selectBatchByKeys(Collection<K> keys, @NotNull SFunction<T, K> column) {
+    @Nonnull
+    default <K> List<T> selectBatchByKeys(Collection<K> keys, @Nonnull SFunction<T, K> column) {
         return CollUtil.isEmpty(keys) ?
             new ArrayList<>() : selectList(wrapper().in(column, keys));
     }
@@ -49,7 +49,7 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @author huangchengxing
      * @date 2021/9/23 13:27
      */
-    @NotNull
+    @Nonnull
     default List<T> deleteBatchByIds(Collection<Integer> ids) {
         return CollUtil.isEmpty(ids) ?
             new ArrayList<>() : deleteBatchByIds(ids);
@@ -66,8 +66,8 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @author huangchengxing
      * @date 2021/9/23 13:27
      */
-    @NotNull
-    default <K> List<T> selectSomeColumnsBatchByKeys(Collection<K> keys, @NotNull SFunction<T, K> column, SFunction<T, ?>... selectColumns) {
+    @Nonnull
+    default <K> List<T> selectSomeColumnsBatchByKeys(Collection<K> keys, @Nonnull SFunction<T, K> column, SFunction<T, ?>... selectColumns) {
         return CollUtil.isEmpty(keys) || ArrayUtil.isEmpty(selectColumns) ?
             new ArrayList<>() : selectList(wrapper().select(selectColumns).in(column, keys));
     }
@@ -84,11 +84,11 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @author huangchengxing
      * @date 2021/9/23 13:48
      */
-    @NotNull
+    @Nonnull
     default <E, K> List<T> selectBatchByKeys(
         Collection<E> entities,
-        @NotNull Function<E, K> keyGenerator,
-        @NotNull SFunction<T, K> column) {
+        @Nonnull Function<E, K> keyGenerator,
+        @Nonnull SFunction<T, K> column) {
         if (entities == null || entities.isEmpty()) {
             return new ArrayList<>();
         }
@@ -107,8 +107,8 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @author huangchengxing
      * @date 2021/9/23 13:27
      */
-    @NotNull
-    default <K> List<T> selectByKey(@NotNull K key, @NotNull SFunction<T, K> column) {
+    @Nonnull
+    default <K> List<T> selectByKey(@Nonnull K key, @Nonnull SFunction<T, K> column) {
         return selectList(wrapper().eq(column, key));
     }
 
@@ -123,8 +123,8 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @author huangchengxing
      * @date 2021/9/23 13:27
      */
-    @NotNull
-    default <K> List<T> selectSomeColumnsByKey(@NotNull K key, @NotNull SFunction<T, K> column, @NotNull SFunction<T, ?>... selectColumns) {
+    @Nonnull
+    default <K> List<T> selectSomeColumnsByKey(@Nonnull K key, @Nonnull SFunction<T, K> column, @Nonnull SFunction<T, ?>... selectColumns) {
         return selectList(wrapper().select(selectColumns).eq(column, key));
     }
 
@@ -140,7 +140,7 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @date 2021/9/29 9:26
      */
     @Nullable
-    default <K> T selectOneByKey(@NotNull K key, @NotNull SFunction<T, K> column) {
+    default <K> T selectOneByKey(@Nonnull K key, @Nonnull SFunction<T, K> column) {
         List<T> results = selectList(wrapper().eq(column, key));
         Assert.isFalse(results.size() > 1, "期望查询1数据，但实际返回{}条", results.size());
         return CollUtil.getFirst(results);
@@ -159,7 +159,7 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @date 2021/9/29 9:26
      */
     @Nullable
-    default <K> T selectOneSomeColumnsByKey(@NotNull K key, @NotNull SFunction<T, K> column, @NotNull SFunction<T, ?>... selectColumns) {
+    default <K> T selectOneSomeColumnsByKey(@Nonnull K key, @Nonnull SFunction<T, K> column, @Nonnull SFunction<T, ?>... selectColumns) {
         List<T> results = selectList(wrapper().select(selectColumns).eq(column, key));
         Assert.isFalse(results.size() > 1, "期望查询1数据，但实际返回{}条", results.size());
         return CollUtil.getFirst(results);
@@ -175,7 +175,7 @@ public interface ExtendBaseMapper<T> extends BaseMapper<T> {
      * @author huangchengxing
      * @date 2021/9/29 9:26
      */
-    default <K> int countByKey(@NotNull K key, @NotNull SFunction<T, K> column) {
+    default <K> int countByKey(@Nonnull K key, @Nonnull SFunction<T, K> column) {
         return selectCount(wrapper().eq(column, key));
     }
 

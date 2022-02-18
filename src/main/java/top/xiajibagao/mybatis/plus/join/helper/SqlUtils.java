@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.core.toolkit.ArrayUtils;
 import top.xiajibagao.mybatis.plus.join.constants.ExtendConstants;
 import top.xiajibagao.mybatis.plus.join.wrapper.JoinWrapper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -65,7 +65,7 @@ public class SqlUtils implements ExtendConstants {
      * @author huangchengxing
      * @date 2022/2/7 11:23
      */
-    public static String concatAs(@NotNull String columnName, @NotNull String alisaName) {
+    public static String concatAs(@Nonnull String columnName, @Nonnull String alisaName) {
         return CharSequenceUtil.isNotBlank(alisaName) ? space(columnName, AS, alisaName) : columnName;
     }
 
@@ -90,7 +90,7 @@ public class SqlUtils implements ExtendConstants {
      * @author huangchengxing
      * @date 2022/2/7 13:32
      */
-    public static String concatSegment(@Nullable String delimiter, @NotNull Collection<? extends ISqlSegment> segments) {
+    public static String concatSegment(@Nullable String delimiter, @Nonnull Collection<? extends ISqlSegment> segments) {
         return segments.stream()
             .map(ISqlSegment::getSqlSegment)
             .collect(Collectors.joining(CharSequenceUtil.nullToEmpty(delimiter)));
@@ -104,7 +104,7 @@ public class SqlUtils implements ExtendConstants {
      * @author huangchengxing
      * @date 2022/2/7 13:32
      */
-    public static String concatSegment(@NotNull Collection<? extends ISqlSegment> segments) {
+    public static String concatSegment(@Nonnull Collection<? extends ISqlSegment> segments) {
         return concatSegment(null, segments);
     }
 
@@ -116,7 +116,7 @@ public class SqlUtils implements ExtendConstants {
      * @author huangchengxing
      * @date 2022/2/9 14:11
      */
-    public static <W extends JoinWrapper<?, ?>> String wrapperToSql(@NotNull W wrapper) {
+    public static <W extends JoinWrapper<?, ?>> String wrapperToSql(@Nonnull W wrapper) {
         return space(
             SELECT, wrapper.getSqlSelect(),
             FROM, space(wrapper.getTable(), wrapper.getAlisa()), NEWLINE,

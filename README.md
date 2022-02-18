@@ -8,17 +8,23 @@
 
 ## 二、快速开始
 
-1. 引入 mybatis-plus-join 依赖：
+1. 引入 mybatis-plus-boot-starter 与 mybatis-plus-join 依赖：
 
    ~~~xml
    <dependency>
        <groupId>top.xiajibagao</groupId>
        <artifactId>mybatis-plus-join</artifactId>
-       <version>2.0.0</version>
+       <version>${version}</version>
    </dependency>
+   
+   <depeendency>
+       <groupId>com.baomidou</groupId>
+       <artifactId>mybatis-plus-boot-starter</artifactId>
+       <version>${mybatis-plus.version}</version>
+   </depeendency>
    ~~~
 
-   > **注意**：项目引入了 hutool、lombok、mybaits-plus-boot-starter依赖，若与项目的依赖版本冲突需要自行排除
+   > 本项目需要自行引入依赖 `mybatis-plus-boot-starter`，此外其他依赖皆不向下传递
 
 2. 将动态返回值插件`DynamicResultInterceptor`注册到 `com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean` 中 ，
 

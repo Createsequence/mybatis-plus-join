@@ -19,7 +19,7 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 
 /**
  * 解析对象，将其转为{@link ResultMap}与{@link TableInfo}，并将对象相关数据添加到{@link LambdaUtils}缓存中
@@ -48,7 +48,7 @@ public class StatementResultParser<T> {
      * @author huangchengxing
      * @date 2021/12/28 17:05
      */
-    public static <T> StatementResultParser<T> parse(@NotNull Configuration conf, @NotNull Class<T> targetClass) {
+    public static <T> StatementResultParser<T> parse(@Nonnull Configuration conf, @Nonnull Class<T> targetClass) {
         return new StatementResultParser<>(conf, targetClass).parse(
             "additional_info_" + targetClass.getName()
         );

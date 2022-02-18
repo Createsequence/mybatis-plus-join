@@ -1,8 +1,8 @@
 package top.xiajibagao.mybatis.plus.join;
 
 import cn.hutool.core.text.CharSequenceUtil;
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +29,9 @@ class MybatisPlusJoinTableApplicationTests {
     @Autowired
     private ScoreMapper scoreMapper;
 
-    protected ObjectMapper objectMapper = new ObjectMapper();
-
     @SneakyThrows
     protected void printObject(Object target) {
-        System.out.println(objectMapper.writeValueAsString(target));
+        System.out.println(JSON.toJSONString(target));
     }
 
     /**

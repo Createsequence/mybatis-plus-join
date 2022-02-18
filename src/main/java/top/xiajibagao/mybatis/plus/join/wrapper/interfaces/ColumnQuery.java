@@ -3,8 +3,8 @@ package top.xiajibagao.mybatis.plus.join.wrapper.interfaces;
 import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 import top.xiajibagao.mybatis.plus.join.constants.Condition;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.validation.constraints.NotNull;
 
 /**
  * 基于{@link ColumnSegment}的查询条件
@@ -165,7 +165,7 @@ public interface ColumnQuery<P, T extends P, R extends P, C extends FuncColumnSe
      * @author huangchengxing
      * @date 2022/2/10 15:42
      */
-    ColumnSegment toTableColumn(@NotNull T column, @Nullable R alisa);
+    ColumnSegment toTableColumn(@Nonnull T column, @Nullable R alisa);
 
     /**
      * 将指定字段组装为{@link ColumnSegment} <br />
@@ -176,7 +176,7 @@ public interface ColumnQuery<P, T extends P, R extends P, C extends FuncColumnSe
      * @author huangchengxing
      * @date 2022/2/10 15:42
      */
-    default ColumnSegment toTableColumn(@NotNull T column) {
+    default ColumnSegment toTableColumn(@Nonnull T column) {
         return toTableColumn(column, null);
     }
 

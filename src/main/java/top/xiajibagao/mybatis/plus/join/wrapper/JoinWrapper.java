@@ -10,7 +10,7 @@ import top.xiajibagao.mybatis.plus.join.constants.ExtendConstants;
 import top.xiajibagao.mybatis.plus.join.constants.JoinType;
 import top.xiajibagao.mybatis.plus.join.helper.SqlUtils;
 
-import javax.validation.constraints.NotNull;
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +58,7 @@ public class JoinWrapper<T, R> extends AbstractDynamicResultWrapper<T, R, JoinWr
      * @author huangchengxing
      * @date 2022/2/9 15:37
      */
-    public static <T, R> JoinWrapper<T, R> create(@NotNull Class<T> targetClass, @NotNull Class<R> resultClass) {
+    public static <T, R> JoinWrapper<T, R> create(@Nonnull Class<T> targetClass, @Nonnull Class<R> resultClass) {
         JoinWrapper<T, R> result = new JoinWrapper<>(targetClass, resultClass, false);
         result.initNeed();
         result.setAlisaByJoinSeq();
@@ -66,7 +66,7 @@ public class JoinWrapper<T, R> extends AbstractDynamicResultWrapper<T, R, JoinWr
         return result;
     }
 
-    protected JoinWrapper(@NotNull Class<T> targetClass, @NotNull Class<R> resultClass, boolean isLogic) {
+    protected JoinWrapper(@Nonnull Class<T> targetClass, @Nonnull Class<R> resultClass, boolean isLogic) {
         super(targetClass, resultClass, isLogic);
     }
     
@@ -363,7 +363,7 @@ public class JoinWrapper<T, R> extends AbstractDynamicResultWrapper<T, R, JoinWr
         private final JoinWrapper<T, R> source;
         private final MergeSegments joinCondition;
 
-        public JoinTable(JoinType joinType, @NotNull Class<J> targetClass, JoinWrapper<T, R> source, boolean isLogic) {
+        public JoinTable(JoinType joinType, @Nonnull Class<J> targetClass, JoinWrapper<T, R> source, boolean isLogic) {
             super(targetClass, source.getResultClass(), isLogic);
 
             this.joinType = joinType;
