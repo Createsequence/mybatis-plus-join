@@ -2,6 +2,7 @@ package top.xiajibagao.mybatis.plus.join.extend;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
@@ -16,7 +17,7 @@ import java.util.Map;
  * @author huangchengxing
  * @date 2022/02/10 14:21
  */
-public interface JoinMapper<T> extends ExtendBaseMapper<T> {
+public interface JoinMapper<T> extends BaseMapper<T> {
 
     /**
      * 关联查询
