@@ -105,7 +105,7 @@ public interface ColumnQuery<P, T extends P, R extends P, C extends FuncColumnSe
      * @date 2022/2/11 9:25
      */
     default <T> C where(Predicate<T> apply, ColumnSegment column, Condition condition, T value) {
-        return where(apply.test(value), column, condition, value::toString);
+        return where(apply.test(value), column, condition, () -> String.valueOf(value));
     }
 
     /**
