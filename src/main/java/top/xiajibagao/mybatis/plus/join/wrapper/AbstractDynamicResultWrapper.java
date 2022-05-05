@@ -147,9 +147,9 @@ public abstract class AbstractDynamicResultWrapper<T, R, C extends AbstractDynam
      * @date 2022/2/11 9:25
      */
     @Override
-    public C where(ColumnSegment column, Condition condition, ISqlSegment valueColumn) {
+    public C where(boolean apply, ColumnSegment column, Condition condition, ISqlSegment valueColumn) {
         return condition.isHasNextParam() ?
-            doIt(true, column, condition, valueColumn) : doIt(true, column, column);
+            doIt(apply, column, condition, valueColumn) : doIt(true, column, column);
     }
 
     /**
