@@ -104,9 +104,7 @@ public abstract class AbstractDynamicResultWrapper<T, R, C extends AbstractDynam
         }
         TableFieldInfo logicDeleteFieldInfo = tableInfo.getLogicDeleteFieldInfo();
         String notDeleteValue = tableInfo.getLogicDeleteFieldInfo().getLogicDeleteValue();
-        where(
-            new TableColumn(this, logicDeleteFieldInfo.getColumn()), Condition.EQ, notDeleteValue
-        );
+        whereIfNotNull(new TableColumn(this, logicDeleteFieldInfo.getColumn()), Condition.EQ, notDeleteValue);
     }
 
     // ============================== query ==============================

@@ -126,7 +126,7 @@ class MybatisPlusJoinTableApplicationTests {
         // 查询差5分满分的人的考试成绩
         JoinWrapper<ScoreDO, StudentDTO> wrapper = JoinWrapper.create(ScoreDO.class, StudentDTO.class);
         wrapper.selectAll()
-            .where(Columns.plus(wrapper.toTableColumn(ScoreDO::getScore), 5), Condition.EQ, 100);
+            .whereIfNotNull(Columns.plus(wrapper.toTableColumn(ScoreDO::getScore), 5), Condition.EQ, 100);
 
         // SELECT t1.* FROM score t1 WHERE ((t1.score + 5) = 100)
         List<StudentDTO> studentDTOS = scoreMapper.selectListJoin(wrapper);
@@ -145,7 +145,7 @@ class MybatisPlusJoinTableApplicationTests {
         JoinWrapper<ScoreDO, StudentDTO> wrapper = JoinWrapper.create(ScoreDO.class, StudentDTO.class);
         wrapper.select(ScoreDO::getCourseId, StudentDTO::getCourseId)
             .select(Columns.count(), StudentDTO::getNum)
-            .where(ScoreDO::getScore, Condition.LT, 60)
+            .whereIfNotNull(ScoreDO::getScore, Condition.LT, 60)
             .groupBy(ScoreDO::getCourseId)
             .having(Columns.count(), Condition.GT, 1);
 
@@ -237,7 +237,7 @@ class MybatisPlusJoinTableApplicationTests {
         JoinWrapper<ScoreDO, StudentDTO> wrapper = JoinWrapper.create(ScoreDO.class, StudentDTO.class);
         wrapper.select(ScoreDO::getCourseId, StudentDTO::getCourseId)
             .select(Columns.count(), StudentDTO::getNum)
-            .where(ScoreDO::getScore, Condition.LT, 60)
+            .whereIfNotNull(ScoreDO::getScore, Condition.LT, 60)
             .groupBy(ScoreDO::getCourseId)
             .having(Columns.count(), Condition.GT, 1);
 
@@ -267,7 +267,7 @@ class MybatisPlusJoinTableApplicationTests {
         JoinWrapper<ScoreDO, StudentDTO> logicTable = JoinWrapper.create(ScoreDO.class, StudentDTO.class);
         logicTable.select(ScoreDO::getCourseId, StudentDTO::getCourseId)
             .select(Columns.count(), StudentDTO::getNum)
-            .where(ScoreDO::getScore, Condition.LT, 60)
+            .whereIfNotNull(ScoreDO::getScore, Condition.LT, 60)
             .groupBy(ScoreDO::getCourseId)
             .having(Columns.count(), Condition.GT, "1");
 
@@ -297,7 +297,7 @@ class MybatisPlusJoinTableApplicationTests {
             .where(wrapper.toTableColumn(CourseDO::getId), Condition.IN, Columns.subQuery(
                 JoinWrapper.create(ScoreDO.class, StudentDTO.class)
                     .select(ScoreDO::getCourseId, StudentDTO::getCourseId)
-                    .where(ScoreDO::getScore, Condition.LT, 60)
+                    .whereIfNotNull(ScoreDO::getScore, Condition.LT, 60)
                     .groupBy(ScoreDO::getCourseId)
                     .having(Columns.count(), Condition.GT, "1")
             ));

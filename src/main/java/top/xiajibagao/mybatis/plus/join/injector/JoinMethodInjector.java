@@ -12,17 +12,21 @@ import java.util.List;
  * @date 2022/02/10 13:24
  */
 public class JoinMethodInjector extends DefaultSqlInjector {
+
     @Override
     public List<AbstractMethod> getMethodList(Class<?> mapperClass) {
         List<AbstractMethod> methods = super.getMethodList(mapperClass);
-        methods.addAll(Arrays.asList(
-            new SelectListJoin(),
+        methods.addAll(getMethods());
+        return methods;
+    }
+
+    public static List<AbstractMethod> getMethods() {
+        return Arrays.asList(new SelectListJoin(),
             new SelectCountJoin(),
             new SelectExistsJoin(),
             new SelectPageJoin(),
             new SelectMapsJoin(),
-            new SelectMapsPageJoin()
-        ));
-        return methods;
+            new SelectMapsPageJoin());
     }
+
 }

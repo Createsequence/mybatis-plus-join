@@ -5,6 +5,8 @@ import top.xiajibagao.mybatis.plus.join.constants.Condition;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.function.Predicate;
 
 /**
  * 基于{@link ColumnSegment}的查询条件
@@ -76,20 +78,20 @@ public interface ColumnQuery<P, T extends P, R extends P, C extends FuncColumnSe
      * @author huangchengxing
      * @date 2022/2/11 9:25
      */
-    C where(ColumnSegment column, Condition condition, ISqlSegment valueColumn);
+    C where(boolean apply, ColumnSegment column, Condition condition, ISqlSegment valueColumn);
 
     /**
      * where条件
      *
      * @param column 表字段
      * @param condition 条件
-     * @param value 值
+     * @param valueColumn 值字段
      * @return C
      * @author huangchengxing
      * @date 2022/2/11 9:25
      */
-    default C where(ColumnSegment column, Condition condition, Object value) {
-        return where(column, condition, value::toString);
+    default C where(ColumnSegment column, Condition condition, ISqlSegment valueColumn) {
+        return where(true, column, condition, valueColumn);
     }
 
     /**
@@ -102,8 +104,36 @@ public interface ColumnQuery<P, T extends P, R extends P, C extends FuncColumnSe
      * @author huangchengxing
      * @date 2022/2/11 9:25
      */
-    default C where(T column, Condition condition, Object value) {
-        return where(toTableColumn(column), condition, value::toString);
+    default <T> C where(Predicate<T> apply, ColumnSegment column, Condition condition, T value) {
+        return where(apply.test(value), column, condition, value::toString);
+    }
+
+    /**
+     * where条件
+     *
+     * @param column 表字段
+     * @param condition 条件
+     * @param value 值
+     * @return C
+     * @author huangchengxing
+     * @date 2022/2/11 9:25
+     */
+    default C whereIfNotNull(ColumnSegment column, Condition condition, Object value) {
+        return where(Objects::nonNull, column, condition, value);
+    }
+
+    /**
+     * where条件
+     *
+     * @param column 表字段
+     * @param condition 条件
+     * @param value 值
+     * @return C
+     * @author huangchengxing
+     * @date 2022/2/11 9:25
+     */
+    default C whereIfNotNull(T column, Condition condition, Object value) {
+        return whereIfNotNull(toTableColumn(column), condition, value);
     }
 
     /**
