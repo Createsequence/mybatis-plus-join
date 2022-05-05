@@ -75,12 +75,22 @@ public interface PredicateCompare<C, R> extends Compare<C, R> {
         return between((l, r) -> l != null && r != null, column, left, right);
     }
 
+    default <V> C betweenIfAnyNotNull(R column, V left, V right) {
+        geIfNotNull(column, left);
+        return leIfNotNull(column, right);
+    }
+
     default <V> C notBetween(BiPredicate<V, V> condition, R column, V left, V right) {
         return notBetween(condition.test(left, right), column, left, right);
     }
 
     default <V> C notBetweenIfAllNotNull(R column, V left, V right) {
         return notBetween((l, r) -> l != null && r != null, column, left, right);
+    }
+
+    default <V> C notBetweenIfAnyNotNull(R column, V left, V right) {
+        ltIfNotNull(column, left);
+        return gtIfNotNull(column, right);
     }
 
     // ========================= like =========================
