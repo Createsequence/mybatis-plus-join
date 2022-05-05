@@ -20,7 +20,7 @@ public interface PredicateFunc <C, R> extends Func<C, R> {
         return in(condition.test(val), column, val);
     }
 
-    default <V extends Collection<?>> C eqIfNotEmpty(R column, V val) {
+    default <V extends Collection<?>> C inIfNotEmpty(R column, V val) {
         return in(CollUtil::isNotEmpty, column, val);
     }
 
