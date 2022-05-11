@@ -1,6 +1,10 @@
 package top.xiajibagao.mybatis.plus.join.wrapper;
 
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.text.CharSequenceUtil;
+import cn.hutool.core.util.ReflectUtil;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.core.conditions.AbstractWrapper;
 import com.baomidou.mybatisplus.core.conditions.ISqlSegment;
 import com.baomidou.mybatisplus.core.enums.SqlKeyword;
@@ -23,11 +27,11 @@ import top.xiajibagao.mybatis.plus.join.wrapper.interfaces.*;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 具有动态返回值的条件构造器 <br />
@@ -120,6 +124,87 @@ public abstract class AbstractDynamicResultWrapper<T, R, C extends AbstractDynam
     public C selectAll() {
         selectColumns.add(new TableColumn(this, ExtendConstants.ASTERISK));
         return typedThis;
+    }
+
+    /**
+     * 获取当前主表类及其父类的全部符合条件的字段并添加至查询字段中。<br />
+     * 将会处理下述字段：
+     * <ul>
+     *     <li>被{@link TableField}注解字段的，且{@link TableField#exist()}与{@link TableField#select()}都为true的字段；</li>
+     *     <li>被{@link TableId}注解的字段；</li>
+     * </ul>
+     * 查询字段以{@link TableField#value()}或{@link TableId#value()}指定值为准，若为空，则默认将注解字段名转为下划线格式作为查询字段。
+     *
+     * @param predicate 是否处理当前字段
+     * @return C
+     * @author huangchengxing
+     * @date 2022/2/9 15:36
+     */
+    public C selectAllColumns(Predicate<Field> predicate) {
+        Stream.of(ReflectUtil.getFields(targetClass))
+            .filter(predicate)
+            .map(this::getColumnsWithAnnotation)
+            .filter(Objects::nonNull)
+            .forEach(column -> selectColumns.add(new TableColumn(this, column)));
+        return typedThis;
+    }
+
+    /**
+     * 获取当前主表类及其父类的全部字段并添加至查询字段中。<br />
+     * 将会处理下述字段：
+     * <ul>
+     *     <li>被{@link TableField}注解字段的，且{@link TableField#exist()}与{@link TableField#select()}都为true的字段；</li>
+     *     <li>被{@link TableId}注解的字段；</li>
+     * </ul>
+     * 查询字段以{@link TableField#value()}或{@link TableId#value()}指定值为准，若为空，则默认将注解字段名转为下划线格式作为查询字段。
+     *
+     * @return C
+     * @author huangchengxing
+     * @date 2022/2/9 15:36
+     */
+    public C selectAllColumns() {
+        return selectAllColumns(f -> true);
+    }
+
+    /**
+     * 获取当前主表类及其父类除排除字段外的全部字段并添加至查询字段中。
+
+     * <p>将会处理下述字段：
+     * <ul>
+     *     <li>被{@link TableField}注解字段的，且{@link TableField#exist()}与{@link TableField#select()}都为true的字段；</li>
+     *     <li>被{@link TableId}注解的字段；</li>
+     * </ul>
+     * 查询字段以{@link TableField#value()}或{@link TableId#value()}指定值为准，若为空，则默认将注解字段名转为下划线格式作为查询字段。
+     *
+     * <p><b>需要注意，仅排除字段名与excludes对应字段的下划线格式相同的字段</b>
+     *
+     * @param excludes 不查询的字段
+     * @return C
+     * @author huangchengxing
+     * @date 2022/2/9 15:36
+     */
+    @SafeVarargs
+    public final C selectAllColumns(SFunction<T, ?>... excludes) {
+        Set<String> excludedColumns =  Stream.of(excludes)
+            .map(ColumnUtils::getPropertyName)
+            .collect(Collectors.toSet());
+        return selectAllColumns(f -> !excludedColumns.contains(f.getName()));
+    }
+
+    protected String getColumnsWithAnnotation(Field field) {
+        TableField annotation = field.getAnnotation(TableField.class);
+        if (Objects.isNull(annotation)) {
+            return Optional.ofNullable(field.getAnnotation(TableId.class))
+                .map(TableId::value)
+                .map(s -> CharSequenceUtil.blankToDefault(s, CharSequenceUtil.toUnderlineCase(field.getName())))
+                .orElse(null);
+        }
+        return Optional.of(annotation)
+            .filter(TableField::exist)
+            .filter(TableField::select)
+            .map(TableField::value)
+            .map(s -> CharSequenceUtil.blankToDefault(s, CharSequenceUtil.toUnderlineCase(field.getName())))
+            .orElse(null);
     }
 
     /**
