@@ -4,11 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 /**
  * @author huangchengxing
  * @date 2021/12/28 14:36
  */
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("score")
